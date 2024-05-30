@@ -11,4 +11,7 @@ export class AnimalService {
   getAge(id: string, name: string) {
     return `This action returns a #${id} animal ${name}`;
   }
+  getQuery(types: string[]) {
+    return `返回 query 参数：#${types.join('、')}`;
+  }
 }
