@@ -1,4 +1,10 @@
-import { Module, ValidationPipe } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+  ValidationPipe,
+} from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AnimalModule } from './modules/animal/animal.module';
@@ -6,6 +12,7 @@ import { PersonModule } from './modules/person/person.module';
 import { StudentModule } from './modules/student/student.module';
 import { GlobalModule } from './modules/common/global.module';
 import { APP_PIPE } from '@nestjs/core';
+import { RequestLoggerMiddleware } from './middleware/request-logger.middleware';
 
 @Module({
   imports: [AnimalModule, PersonModule, StudentModule, GlobalModule.forRoot()],
@@ -29,4 +36,10 @@ import { APP_PIPE } from '@nestjs/core';
     },
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(RequestLoggerMiddleware)
+      .forRoutes({ path: '*', method: RequestMethod.ALL });
+  }
+}
